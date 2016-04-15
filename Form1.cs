@@ -78,7 +78,7 @@ namespace apprentissageSUP
             shuffle(data);
             //boosting;
             //data.Sort(delegate(List<double> t1, List<double> t2) { return t1[3].CompareTo(t2[3]); });
-            double perc = Math.Min(1.0,(double)nbIt/5000f);
+            double perc =  Math.Min(1.0, (double)nbIt / 5000f);
             this.Invoke((MethodInvoker)delegate
             {
                 nNbIt.Enabled = false;
@@ -170,10 +170,7 @@ namespace apprentissageSUP
             });
         }
 
-        private void btnLearn_Click(object sender, EventArgs e)
-        {
-            process();
-        }
+        
         private bool process()
         {
             bool lfini = learn();

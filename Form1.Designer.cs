@@ -31,7 +31,6 @@
             this.pBoxOut = new System.Windows.Forms.PictureBox();
             this.openD = new System.Windows.Forms.Button();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.btnLearn = new System.Windows.Forms.Button();
             this.btnCLearn = new System.Windows.Forms.Button();
             this.lClearn = new System.Windows.Forms.Label();
             this.nNbIt = new System.Windows.Forms.NumericUpDown();
@@ -70,16 +69,6 @@
             // openFileDialog
             // 
             this.openFileDialog.FileName = "openFileDialog1";
-            // 
-            // btnLearn
-            // 
-            this.btnLearn.Location = new System.Drawing.Point(187, 12);
-            this.btnLearn.Name = "btnLearn";
-            this.btnLearn.Size = new System.Drawing.Size(75, 23);
-            this.btnLearn.TabIndex = 3;
-            this.btnLearn.Text = "learn";
-            this.btnLearn.UseVisualStyleBackColor = true;
-            this.btnLearn.Click += new System.EventHandler(this.btnLearn_Click);
             // 
             // btnCLearn
             // 
@@ -228,7 +217,6 @@
             this.Controls.Add(this.nNbIt);
             this.Controls.Add(this.lClearn);
             this.Controls.Add(this.btnCLearn);
-            this.Controls.Add(this.btnLearn);
             this.Controls.Add(this.openD);
             this.Controls.Add(this.pBoxOut);
             this.Name = "Form1";
@@ -247,7 +235,6 @@
         private System.Windows.Forms.PictureBox pBoxOut;
         private System.Windows.Forms.Button openD;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
-        private System.Windows.Forms.Button btnLearn;
         private System.Windows.Forms.Button btnCLearn;
         private System.Windows.Forms.Label lClearn;
         private System.Windows.Forms.NumericUpDown nNbIt;
