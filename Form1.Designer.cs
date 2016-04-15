@@ -114,9 +114,9 @@
             // 
             this.label1.Location = new System.Drawing.Point(93, 41);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 23);
+            this.label1.Size = new System.Drawing.Size(163, 23);
             this.label1.TabIndex = 7;
-            this.label1.Text = "nb iterations";
+            this.label1.Text = "nb iterations/backprop";
             // 
             // lC1
             // 

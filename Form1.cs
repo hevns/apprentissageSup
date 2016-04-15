@@ -29,6 +29,7 @@ namespace apprentissageSUP
         DirectoryInfo CurrentD;
         DateTime start;
 
+        //pour mélanger une List<T>
         public void shuffle<T>(List<T> list)
         {
             int n = list.Count;
@@ -41,6 +42,7 @@ namespace apprentissageSUP
                 list[n] = value;
             }
         }
+        //capture d'écran automatique
         public void screenShot(DateTime offset)
         {
             
@@ -74,6 +76,7 @@ namespace apprentissageSUP
 
         private bool learn()
         {
+            //pour affichage
             this.Invoke((MethodInvoker)delegate
             {
                 nNbIt.Enabled = false;
@@ -81,99 +84,50 @@ namespace apprentissageSUP
                 nAlpha.Enabled = false;
                 lState.Text = "Learning";
             });
-            //1 shuffle
-            //shuffle(data);
-            
-            int total = 500;
-            double perc = 0.5*(nbIt/10000f);
-            perc = Math.Min(1, perc);
+        
+            //nombre d'itérationa a faire avant d'actualiser l'image
+            int total = 100;
             Random rand = new Random();
-            for (int k = 0; k < total/nNbIt.Value; ++k)
+            for (int k = 0; k < total; ++k)
             {
-                //List<List<double>> lvecteursentrees = new List<List<double>>();
-                //List<double> lsortiesdesirees = new List<double>();
-                nbIt+=(int)nNbIt.Value;
-                /*
-                int countI = 0, countS = 0;
-                //boosting;
+             
                 
                 if (data[0][3] != 0)
+                    //on calcule les erreurs et on stock dans data
                     foreach (List<double> d in data)
                     {
                         double outValue = sortiesReseau[(int)d[0] * bmp.Width + (int)d[1]];
                         d[3] = Math.Abs(d[2] - outValue);
                     }
+                //on tri data en fonction de l'erreur
+                data.Sort(delegate (List<double> t1, List<double> t2) { return t2[3].CompareTo(t1[3]); });
+                //nombre de données les plus erronées a prendre
+                int numberOfSampleError= 50;
+                //nombre d'échantillons a prendre
+                int numberOfSample = 300;
 
-                data.Sort(delegate(List<double> t1, List<double> t2) { return t2[3].CompareTo(t1[3]); });
-               
-                for (int i = 0; i < (int)(data.Count * perc); i++)
+                List<List<double>> lvecteursentrees = new List<List<double>>();
+                List<double> lsortiesdesirees = new List<double>();
+                //on récupère les n plus mauvaises valeurs
+                for (int i = 0; i < numberOfSampleError; ++i)
                 {
+
                     List<double> d = data[i];
                     lvecteursentrees.Add(new List<double> { d[0] / 500f, d[1] / 500f });
                     lsortiesdesirees.Add(d[2]);
-                    if (d[2] < 0.5)
-                        countI++;
-                    else
-                        countS++;
                 }
-                 
-                for (int i = (int)(data.Count * perc); i < data.Count; i++)
-                {
-                    List<double> d = data[i];
-                    if (countI < countS && d[2] < 0.5)
-                    {
-                        countI++;
-                        lvecteursentrees.Add(new List<double> { d[0] / 500f, d[1] / 500f });
-                        lsortiesdesirees.Add(d[2]);
-                    }
-                    if (countI > countS && d[2] > 0.5)
-                    {
-                        countS++;
-                        lvecteursentrees.Add(new List<double> { d[0] / 500f, d[1] / 500f });
-                        lsortiesdesirees.Add(d[2]);
-                    }
-                    if (countI == countS)
-                        break;
-                }
-                 
-                int tmp = countS;
-                countS = countI*15;
-                countI =tmp*15;
-                for (int i = 0; i < (int)(data.Count * perc); i++)
-                {
-                    List<double> d = data[data.Count - i - 1];
-                    if (d[2] < 0.5 && countI > 0)
-                    {
-                        countI--;
-                        lvecteursentrees.Add(new List<double> { d[0] / 500f, d[1] / 500f });
-                        lsortiesdesirees.Add(d[2]);
-                    }
-                    if (d[2] >= 0.5 && countS-- > 0)
-                    {
-                        countS--;
-                        lvecteursentrees.Add(new List<double> { d[0] / 500f, d[1] / 500f });
-                        lsortiesdesirees.Add(d[2]);
-                    }
-                }
-                 * */
-                if (data[0][3] != 0)
-                    foreach (List<double> d in data)
-                    {
-                        double outValue = sortiesReseau[(int)d[0] * bmp.Width + (int)d[1]];
-                        d[3] = Math.Abs(d[2] - outValue);
-                    }
-
-                data.Sort(delegate(List<double> t1, List<double> t2) { return t2[3].CompareTo(t1[3]); });
-                int numberOfSample = 300;
                 
-                List<List<double>> lvecteursentrees = new List<List<double>>();
-                List<double> lsortiesdesirees = new List<double>();
+                //on récupère m echantillons
                 for (int i = 0; i < numberOfSample; ++i)
                 {
+                    //nombre au hasard entre -1 et 1
                     double val = rand.NextDouble() * 2 - 1;
-                    val = val * val * val;
+                    val = (val * val * val);
+                    //val suit donc densité de probabilité de x^3
+                    //on décale val entre 0 et dataCount-1
                     val = val * data.Count / 2f + data.Count / 2f;
-                    int s = (int)Math.Floor(val);
+                    int s = Math.Min(data.Count-1,(int)Math.Floor(val));
+                    //on recupère l'echantilon s
                     List<double> d = data[s];
                     lvecteursentrees.Add(new List<double> { d[0] / 500f, d[1] / 500f });
                     lsortiesdesirees.Add(d[2]);
@@ -183,30 +137,17 @@ namespace apprentissageSUP
                                 (int)nNbIt.Value);
             }
           
-
-            //leaning
-            /*
-            List<List<double>> lvecteursentrees = new List<List<double>>();
-            List<double> lsortiesdesirees = new List<double>();
-            for(int i = 0; i<data.Count;++i)
-            {
-                List<double> d = data[i];
-                lvecteursentrees.Add(new List<double> { d[0] / 500f, d[1] / 500f });
-                lsortiesdesirees.Add(d[2]);
-            }
-             */
             
             bool fini = false;
-
-            //end learning
-
+            
+            //pour affichage
             this.Invoke((MethodInvoker)delegate
             {
                 nNbIt.Enabled = true;
                 nNbNeu.Enabled = true;
                 nAlpha.Enabled = true;
                 lState.Text = "waiting";
-                //nbIt += (int)nNbIt.Value;
+                nbIt += total;
                 lClearn.Text = "" + nbIt;
                 fini = checkThresh();
                 if (fini)
@@ -232,6 +173,7 @@ namespace apprentissageSUP
             seuil = -1;
             System.IO.StreamReader file = new System.IO.StreamReader(openFileDialog.FileName);
             string line;
+            //on lit les données
             while ((line = file.ReadLine()) != null)
             {
                 string[] res = line.Split(null);
@@ -244,10 +186,10 @@ namespace apprentissageSUP
             reseau = new Reseau(3, // x y + cste
                                 3,
                                 (int)nNbNeu.Value);
-
-            //learn();
+            
             drawData();
         }
+        //dessine les données
         private void drawData()
         {            
             if(sortiesReseau.Count != 0)
@@ -271,7 +213,6 @@ namespace apprentissageSUP
                 pBoxOut.Refresh();
             });
         }
-
         
         private bool process()
         {
@@ -279,10 +220,11 @@ namespace apprentissageSUP
             drawData();
             return lfini;
         }
+        //call back pour le thread
         private void loopProcess()
         {
             start = DateTime.Now;
-
+            seuil = -1;
             string sub = ScreenD.FullName + Path.DirectorySeparatorChar + nNbNeu.Value + "NeurParCouche_alpha"+((double)nAlpha.Value).ToString("0.00");
             CurrentD = Directory.CreateDirectory(sub); 
             while (learning)
@@ -292,8 +234,17 @@ namespace apprentissageSUP
                     break;
             }
             screenShot(start);
-            MessageBox.Show("Fini\r\nScreen dans :\r\n" + sub + Path.DirectorySeparatorChar);
+            var diff = DateTime.Now - start;
+            this.Invoke((MethodInvoker)delegate
+            {
+                lC1.Text += "\r\nDuration :" + diff.Minutes + "m" + diff.Seconds + "s";
+            });
+            if(cbScreen.Checked)
+                MessageBox.Show("Fini+\r\nScreen dans :\r\n" + sub + Path.DirectorySeparatorChar);
+            else
+                MessageBox.Show("Fini");
         }
+        //calcule les erreurs et vérifie si un seuil sépare les données
         private bool checkThresh()
         {
             List<List<double>> lvecteursentrees = new List<List<double>>();
@@ -305,6 +256,7 @@ namespace apprentissageSUP
             //on sait qu'on veut deux classes pour 0.2 et 08
             double max02 = 0;
             double min08 = 1;
+            //on calcul les moyennes
             double moyC1 = 0;
             int cpt = 0;
             double moyC2 = 0;
