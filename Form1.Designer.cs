@@ -97,7 +97,7 @@
             0,
             0});
             this.nNbIt.Minimum = new decimal(new int[] {
-            10,
+            1,
             0,
             0,
             0});
@@ -105,7 +105,7 @@
             this.nNbIt.Size = new System.Drawing.Size(74, 20);
             this.nNbIt.TabIndex = 6;
             this.nNbIt.Value = new decimal(new int[] {
-            10,
+            5,
             0,
             0,
             0});

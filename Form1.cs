@@ -74,11 +74,6 @@ namespace apprentissageSUP
 
         private bool learn()
         {
-            //1 shuffle
-            shuffle(data);
-            //boosting;
-            //data.Sort(delegate(List<double> t1, List<double> t2) { return t1[3].CompareTo(t2[3]); });
-            double perc =  Math.Min(1.0, (double)nbIt / 5000f);
             this.Invoke((MethodInvoker)delegate
             {
                 nNbIt.Enabled = false;
@@ -86,25 +81,132 @@ namespace apprentissageSUP
                 nAlpha.Enabled = false;
                 lState.Text = "Learning";
             });
+            //1 shuffle
+            //shuffle(data);
+            
+            int total = 500;
+            double perc = 0.5*(nbIt/10000f);
+            perc = Math.Min(1, perc);
+            Random rand = new Random();
+            for (int k = 0; k < total/nNbIt.Value; ++k)
+            {
+                //List<List<double>> lvecteursentrees = new List<List<double>>();
+                //List<double> lsortiesdesirees = new List<double>();
+                nbIt+=(int)nNbIt.Value;
+                /*
+                int countI = 0, countS = 0;
+                //boosting;
+                
+                if (data[0][3] != 0)
+                    foreach (List<double> d in data)
+                    {
+                        double outValue = sortiesReseau[(int)d[0] * bmp.Width + (int)d[1]];
+                        d[3] = Math.Abs(d[2] - outValue);
+                    }
+
+                data.Sort(delegate(List<double> t1, List<double> t2) { return t2[3].CompareTo(t1[3]); });
+               
+                for (int i = 0; i < (int)(data.Count * perc); i++)
+                {
+                    List<double> d = data[i];
+                    lvecteursentrees.Add(new List<double> { d[0] / 500f, d[1] / 500f });
+                    lsortiesdesirees.Add(d[2]);
+                    if (d[2] < 0.5)
+                        countI++;
+                    else
+                        countS++;
+                }
+                 
+                for (int i = (int)(data.Count * perc); i < data.Count; i++)
+                {
+                    List<double> d = data[i];
+                    if (countI < countS && d[2] < 0.5)
+                    {
+                        countI++;
+                        lvecteursentrees.Add(new List<double> { d[0] / 500f, d[1] / 500f });
+                        lsortiesdesirees.Add(d[2]);
+                    }
+                    if (countI > countS && d[2] > 0.5)
+                    {
+                        countS++;
+                        lvecteursentrees.Add(new List<double> { d[0] / 500f, d[1] / 500f });
+                        lsortiesdesirees.Add(d[2]);
+                    }
+                    if (countI == countS)
+                        break;
+                }
+                 
+                int tmp = countS;
+                countS = countI*15;
+                countI =tmp*15;
+                for (int i = 0; i < (int)(data.Count * perc); i++)
+                {
+                    List<double> d = data[data.Count - i - 1];
+                    if (d[2] < 0.5 && countI > 0)
+                    {
+                        countI--;
+                        lvecteursentrees.Add(new List<double> { d[0] / 500f, d[1] / 500f });
+                        lsortiesdesirees.Add(d[2]);
+                    }
+                    if (d[2] >= 0.5 && countS-- > 0)
+                    {
+                        countS--;
+                        lvecteursentrees.Add(new List<double> { d[0] / 500f, d[1] / 500f });
+                        lsortiesdesirees.Add(d[2]);
+                    }
+                }
+                 * */
+                if (data[0][3] != 0)
+                    foreach (List<double> d in data)
+                    {
+                        double outValue = sortiesReseau[(int)d[0] * bmp.Width + (int)d[1]];
+                        d[3] = Math.Abs(d[2] - outValue);
+                    }
+
+                data.Sort(delegate(List<double> t1, List<double> t2) { return t2[3].CompareTo(t1[3]); });
+                int numberOfSample = 300;
+                
+                List<List<double>> lvecteursentrees = new List<List<double>>();
+                List<double> lsortiesdesirees = new List<double>();
+                for (int i = 0; i < numberOfSample; ++i)
+                {
+                    double val = rand.NextDouble() * 2 - 1;
+                    val = val * val * val;
+                    val = val * data.Count / 2f + data.Count / 2f;
+                    int s = (int)Math.Floor(val);
+                    List<double> d = data[s];
+                    lvecteursentrees.Add(new List<double> { d[0] / 500f, d[1] / 500f });
+                    lsortiesdesirees.Add(d[2]);
+                }
+                reseau.backprop(lvecteursentrees, lsortiesdesirees,
+                                (double)nAlpha.Value,
+                                (int)nNbIt.Value);
+            }
+          
+
+            //leaning
+            /*
             List<List<double>> lvecteursentrees = new List<List<double>>();
             List<double> lsortiesdesirees = new List<double>();
-            for(int i = 0; i<data.Count*perc;++i)
+            for(int i = 0; i<data.Count;++i)
             {
                 List<double> d = data[i];
                 lvecteursentrees.Add(new List<double> { d[0] / 500f, d[1] / 500f });
                 lsortiesdesirees.Add(d[2]);
             }
-            reseau.backprop(lvecteursentrees, lsortiesdesirees,
-                                (double)nAlpha.Value,
-                                (int)nNbIt.Value);
+             */
+            
             bool fini = false;
+
+            //end learning
+
             this.Invoke((MethodInvoker)delegate
             {
                 nNbIt.Enabled = true;
                 nNbNeu.Enabled = true;
                 nAlpha.Enabled = true;
                 lState.Text = "waiting";
-                nbIt += (int)nNbIt.Value;
+                //nbIt += (int)nNbIt.Value;
                 lClearn.Text = "" + nbIt;
                 fini = checkThresh();
                 if (fini)
